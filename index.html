@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malla Curricular Interactiva - Traducción</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter&display=swap">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
+      overflow-x: auto;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .grid {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+    .semester {
+      min-width: 260px;
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+    .semester h3 {
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 15px;
+      background-color: #007acc;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .course {
+      margin: 6px 0;
+      padding: 8px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-left: 5px solid #007acc;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .completed {
+      text-decoration: line-through;
+      border-left-color: #999;
+      background-color: #e6f7e6;
+    }
+    .unlocked {
+      font-weight: bold;
+      border-left-color: #28a745;
+      background-color: #f0fff4;
+    }
+    .locked {
+      opacity: 0.6;
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+    }
+    .buttons {
+      margin-top: 20px;
+      text-align: center;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 14px;
+      font-size: 14px;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005f99;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular Interactiva - Traducción Inglés-Español</h1>
+  <div id="curriculum" class="grid"></div>
+  <div class="buttons">
+    <button onclick="resetCourses()">Reiniciar</button>
+    <button onclick="exportProgress()">Exportar avance</button>
+  </div>
+
+  <script>
+    const semesterLabels = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+    const courses = [
+  {
+    "subjects": [
+      {
+        "name": "Fundamentos de la traducción",
+        "prerequisites": []
+      },
+      {
+        "name": "Lengua y Cultura Inglesa I",
+        "prerequisites": []
+      },
+      {
+        "name": "Fonética Inglesa I",
+        "prerequisites": []
+      },
+      {
+        "name": "Informática y Traducción",
+        "prerequisites": []
+      },
+      {
+        "name": "Lingüística General",
+        "prerequisites": []
+      },
+      {
+        "name": "Español: Lengua y Cultura",
+        "prerequisites": []
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Teoría y Técnicas de Traducción I",
+        "prerequisites": []
+      },
+      {
+        "name": "Lengua y Cultura Inglesa II",
+        "prerequisites": []
+      },
+      {
+        "name": "Fonética Inglesa II",
+        "prerequisites": [
+          "Fonética Inglesa I"
+        ]
+      },
+      {
+        "name": "Documentación y Traducción",
+        "prerequisites": []
+      },
+      {
+        "name": "Español: Comprensión de Textos",
+        "prerequisites": [
+          "Español: Lengua y Cultura"
+        ]
+      },
+      {
+        "name": "Electivo Antropología Cristiana",
+        "prerequisites": []
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Traducción General I",
+        "prerequisites": []
+      },
+      {
+        "name": "Lengua y Cultura Inglesa III",
+        "prerequisites": [
+          "Lengua y Cultura Inglesa I",
+          "Lengua y Cultura Inglesa II"
+        ]
+      },
+      {
+        "name": "Gramática Inglesa I",
+        "prerequisites": []
+      },
+      {
+        "name": "Lingüística y Comunicación",
+        "prerequisites": [
+          "Lingüística General"
+        ]
+      },
+      {
+        "name": "Español: Producción de Textos",
+        "prerequisites": [
+          "Español: Comprensión de Textos"
+        ]
+      },
+      {
+        "name": "Electivo Teológico",
+        "prerequisites": []
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Traducción General II",
+        "prerequisites": [
+          "Traducción General I"
+        ]
+      },
+      {
+        "name": "Teoría y Técnicas de Traducción II",
+        "prerequisites": [
+          "Teoría y Técnicas de Traducción I"
+        ]
+      },
+      {
+        "name": "Lengua y Cultura Inglesa IV",
+        "prerequisites": [
+          "Lengua y Cultura Inglesa III"
+        ]
+      },
+      {
+        "name": "Gramática Inglesa II",
+        "prerequisites": [
+          "Gramática Inglesa I"
+        ]
+      },
+      {
+        "name": "Tecnología y Traducción",
+        "prerequisites": [
+          "Fundamentos de la traducción",
+          "Informática y Traducción"
+        ]
+      },
+      {
+        "name": "Español: Análisis de Textos",
+        "prerequisites": [
+          "Español: Producción de Textos"
+        ]
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Traducción Ciencias Sociales y Humanidades I",
+        "prerequisites": [
+          "Gramática Inglesa II"
+        ]
+      },
+      {
+        "name": "Traducción Ciencias y Tecnologías I",
+        "prerequisites": [
+          "Gramática Inglesa II"
+        ]
+      },
+      {
+        "name": "Lengua y Cultura Inglesa V",
+        "prerequisites": [
+          "Lengua y Cultura Inglesa IV"
+        ]
+      },
+      {
+        "name": "Práctica Inicial",
+        "prerequisites": [
+          "Informática y Traducción",
+          "Lengua y Cultura Inglesa IV",
+          "Español: Análisis de Textos",
+          "Traducción General II"
+        ]
+      },
+      {
+        "name": "Terminología",
+        "prerequisites": [
+          "Documentación y Traducción"
+        ]
+      },
+      {
+        "name": "Lingüística y Traducción",
+        "prerequisites": [
+          "Lingüística y Comunicación"
+        ]
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Traducción Ciencias Sociales y Humanidades II",
+        "prerequisites": [
+          "Traducción Ciencias Sociales y Humanidades I",
+          "Práctica Inicial"
+        ]
+      },
+      {
+        "name": "Traducción Ciencias y Tecnologías II",
+        "prerequisites": [
+          "Traducción Ciencias y Tecnologías I",
+          "Práctica Inicial"
+        ]
+      },
+      {
+        "name": "Lengua y Cultura Inglesa VI",
+        "prerequisites": [
+          "Lengua y Cultura Inglesa V"
+        ]
+      },
+      {
+        "name": "Gramática Inglesa III",
+        "prerequisites": [
+          "Gramática Inglesa II"
+        ]
+      },
+      {
+        "name": "Metodología de Investigación en Traducción",
+        "prerequisites": [
+          "Documentación y Traducción",
+          "Teoría y Técnicas de Traducción II"
+        ]
+      },
+      {
+        "name": "Electivo Diversidad I",
+        "prerequisites": []
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Traducción Ciencias Sociales y Humanidades III",
+        "prerequisites": [
+          "Traducción Ciencias Sociales y Humanidades II"
+        ]
+      },
+      {
+        "name": "Traducción Ciencias y Tecnologías III",
+        "prerequisites": [
+          "Traducción Ciencias y Tecnologías II"
+        ]
+      },
+      {
+        "name": "Lengua y Cultura Inglesa VII",
+        "prerequisites": [
+          "Lengua y Cultura Inglesa VI"
+        ]
+      },
+      {
+        "name": "Gramática Inglesa IV",
+        "prerequisites": [
+          "Gramática Inglesa III"
+        ]
+      },
+      {
+        "name": "Seminario de Grado I",
+        "prerequisites": [
+          "Metodología de Investigación en Traducción"
+        ]
+      },
+      {
+        "name": "Revisión y Edición de Textos I",
+        "prerequisites": [
+          "Traducción General II",
+          "Español: Análisis de Textos"
+        ]
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Traducción Ciencias Sociales y Humanidades IV",
+        "prerequisites": [
+          "Traducción Ciencias Sociales y Humanidades III"
+        ]
+      },
+      {
+        "name": "Traducción Ciencias y Tecnologías IV",
+        "prerequisites": [
+          "Traducción Ciencias y Tecnologías III"
+        ]
+      },
+      {
+        "name": "Lengua y Cultura Inglesa VIII",
+        "prerequisites": [
+          "Lengua y Cultura Inglesa VII"
+        ]
+      },
+      {
+        "name": "Seminario de Grado II",
+        "prerequisites": [
+          "Seminario de Grado I",
+          "Lingüística y Traducción"
+        ]
+      },
+      {
+        "name": "Revisión y Edición de Textos II",
+        "prerequisites": [
+          "Revisión y Edición de Textos I"
+        ]
+      },
+      {
+        "name": "Electivo Diversidad II",
+        "prerequisites": []
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Traducción Ciencias Sociales y Humanidades V",
+        "prerequisites": [
+          "Traducción Ciencias Sociales y Humanidades IV",
+          "Gramática Inglesa IV"
+        ]
+      },
+      {
+        "name": "Traducción Ciencias y Tecnologías V",
+        "prerequisites": [
+          "Traducción Ciencias y Tecnologías IV"
+        ]
+      },
+      {
+        "name": "Lengua y Cultura Inglesa IX",
+        "prerequisites": [
+          "Lengua y Cultura Inglesa VIII"
+        ]
+      },
+      {
+        "name": "Gestión de Proyectos",
+        "prerequisites": [
+          "Traducción Ciencias Sociales y Humanidades IV",
+          "Traducción Ciencias y Tecnologías IV"
+        ]
+      },
+      {
+        "name": "Traducción Multimedia",
+        "prerequisites": [
+          "Fundamentos de la traducción",
+          "Lengua y Cultura Inglesa I",
+          "Fonética Inglesa I",
+          "Informática y Traducción",
+          "Lingüística General",
+          "Español: Lengua y Cultura",
+          "Teoría y Técnicas de Traducción I",
+          "Lengua y Cultura Inglesa II",
+          "Fonética Inglesa II",
+          "Documentación y Traducción",
+          "Español: Comprensión de Textos",
+          "Traducción General I",
+          "Lengua y Cultura Inglesa III",
+          "Gramática Inglesa I",
+          "Lingüística y Comunicación",
+          "Español: Producción de Textos",
+          "Traducción General II",
+          "Teoría y Técnicas de Traducción II",
+          "Lengua y Cultura Inglesa IV",
+          "Gramática Inglesa II",
+          "Tecnología y Traducción",
+          "Español: Análisis de Textos",
+          "Traducción Ciencias Sociales y Humanidades I",
+          "Traducción Ciencias y Tecnologías I",
+          "Lengua y Cultura Inglesa V",
+          "Práctica Inicial",
+          "Terminología",
+          "Lingüística y Traducción",
+          "Traducción Ciencias Sociales y Humanidades II",
+          "Traducción Ciencias y Tecnologías II",
+          "Lengua y Cultura Inglesa VI",
+          "Gramática Inglesa III",
+          "Metodología de Investigación en Traducción",
+          "Traducción Ciencias Sociales y Humanidades III",
+          "Traducción Ciencias y Tecnologías III",
+          "Lengua y Cultura Inglesa VII",
+          "Gramática Inglesa IV",
+          "Seminario de Grado I",
+          "Revisión y Edición de Textos I"
+        ]
+      },
+      {
+        "name": "Electivo Diversidad III",
+        "prerequisites": []
+      }
+    ]
+  },
+  {
+    "subjects": [
+      {
+        "name": "Modalidades de Traducción Avanzada",
+        "prerequisites": [
+          "Traducción Ciencias Sociales y Humanidades II",
+          "Traducción Ciencias y Tecnologías II",
+          "Lengua y Cultura Inglesa VI",
+          "Gramática Inglesa III",
+          "Metodología de Investigación en Traducción",
+          "Traducción Ciencias Sociales y Humanidades III",
+          "Traducción Ciencias y Tecnologías III",
+          "Lengua y Cultura Inglesa VII",
+          "Gramática Inglesa IV",
+          "Seminario de Grado I",
+          "Revisión y Edición de Textos I",
+          "Traducción Ciencias Sociales y Humanidades IV",
+          "Traducción Ciencias y Tecnologías IV",
+          "Lengua y Cultura Inglesa VIII",
+          "Seminario de Grado II",
+          "Revisión y Edición de Textos II"
+        ]
+      },
+      {
+        "name": "Práctica Profesional",
+        "prerequisites": [
+          "Traducción Ciencias Sociales y Humanidades V",
+          "Traducción Ciencias y Tecnologías V",
+          "Lengua y Cultura Inglesa IX",
+          "Gestión de Proyectos",
+          "Traducción Multimedia"
+        ]
+      },
+      {
+        "name": "Ética Profesional",
+        "prerequisites": []
+      }
+    ]
+  }
+];
+
+    const completed = new Set(JSON.parse(localStorage.getItem('completedCourses') || '[]'));
+
+    const curriculumData = [{"subjects": [{"name": "Fundamentos de la traducción", "prerequisites": []}, {"name": "Lengua y Cultura Inglesa I", "prerequisites": []}, {"name": "Fonética Inglesa I", "prerequisites": []}, {"name": "Informática y Traducción", "prerequisites": []}, {"name": "Lingüística General", "prerequisites": []}, {"name": "Español: Lengua y Cultura", "prerequisites": []}]}, {"subjects": [{"name": "Teoría y Técnicas de Traducción I", "prerequisites": []}, {"name": "Lengua y Cultura Inglesa II", "prerequisites": []}, {"name": "Fonética Inglesa II", "prerequisites": ["Fonética Inglesa I"]}, {"name": "Documentación y Traducción", "prerequisites": []}, {"name": "Español: Comprensión de Textos", "prerequisites": ["Español: Lengua y Cultura"]}, {"name": "Electivo Antropología Cristiana", "prerequisites": []}]}];
+curriculumData.forEach((block, i) => courses[i].subjects = block.subjects);
+
+    function renderCurriculum() {
+      const container = document.getElementById("curriculum");
+      container.innerHTML = "";
+
+      courses.forEach((block, index) => {
+        const sem = document.createElement("div");
+        sem.className = "semester";
+        const title = document.createElement("h3");
+        title.textContent = semesterLabels[index];
+        sem.appendChild(title);
+
+        block.subjects.forEach((subject) => {
+          const div = document.createElement("div");
+          div.className = "course";
+          const allPrereqMet = subject.prerequisites.every(pr => completed.has(pr));
+
+          if (completed.has(subject.name)) {
+            div.classList.add("completed");
+          } else if (allPrereqMet) {
+            div.classList.add("unlocked");
+          } else {
+            div.classList.add("locked");
+          }
+
+          div.textContent = subject.name;
+          div.onclick = () => {
+            if (div.classList.contains("unlocked")) {
+              completed.add(subject.name);
+              saveProgress();
+              renderCurriculum();
+            } else if (completed.has(subject.name)) {
+              completed.delete(subject.name);
+              saveProgress();
+              renderCurriculum();
+            }
+          };
+
+          sem.appendChild(div);
+        });
+
+        container.appendChild(sem);
+      });
+    }
+
+    function resetCourses() {
+      completed.clear();
+      saveProgress();
+      renderCurriculum();
+    }
+
+    function exportProgress() {
+      const data = Array.from(completed);
+      alert("Cursos completados:\n" + data.join("\n"));
+    }
+
+    function saveProgress() {
+      localStorage.setItem('completedCourses', JSON.stringify(Array.from(completed)));
+    }
+
+    renderCurriculum();
+  </script>
+</body>
+</html>
